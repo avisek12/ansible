@@ -1,0 +1,33 @@
+-
+ hosts: all
+ become: True
+ tasks:
+    - name: Install httpd package
+      yum:
+       name: httpd
+       state: present
+ #     when: inventory_hostname in groups['dev']
+
+    - name: Restart httpd package
+      service:
+       name: httpd
+       state: restarted
+  #    when: inventory_hostname in groups['dev']
+
+    - name: Copy Talaiva to web
+      copy:
+        content: "Hi this is talaiva"
+        dest: /var/www/html/index.html  # link to /path/to/file
+   #   when: ansible_facts['hostname'] == "ansible2"
+    - name: Enable http service
+      firewalld:
+       service: http
+       permanent: yes
+       state: enabled
+   #   when: inventory_hostname in groups['dev']
+
+    - name: reload service httpd, in all cases
+      systemd:
+        name: firewalld
+        state: reloaded
+   #   when: inventory_hostname in groups['dev']
